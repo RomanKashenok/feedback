@@ -1,34 +1,45 @@
 package info.freeit.service;
 
 import info.freeit.model.User;
-import info.freeit.repository.UserDaoInternal;
+import info.freeit.repository.UserDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class UserService {
 
-    private UserDaoInternal userDaoInternal;
+    private final UserDao userDao;
 
-    protected UserService(UserDaoInternal userDaoInternal) {
-        this.userDaoInternal = userDaoInternal;
+    @Autowired
+    public UserService(@Qualifier("userDaoExternal") UserDao userDao) {
+        this.userDao = userDao;
     }
 
     public boolean add(User user) {
         System.out.printf("UserService: add() with user: %s\n", user);
-        return userDaoInternal.add(user);
+        boolean added = false;
+        try {
+            added = userDao.add(user);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return added;
     }
 
     public boolean delete(long id) {
         System.out.printf("UserService: delete() with user id: %s\n", id);
-        return userDaoInternal.delete(id);
+        return userDao.delete(id);
     }
 
     public User get(long id) {
         System.out.printf("UserService: get() with user id: %s\n", id);
-        return userDaoInternal.get(id);
+        return userDao.get(id);
     }
 
     public User get(String username) {
         System.out.printf("UserService: get() with username: %s", username);
-        return userDaoInternal.get(username);
+        return userDao.get(username);
     }
 
 }
