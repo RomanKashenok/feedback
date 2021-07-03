@@ -12,7 +12,7 @@ public final class UserService {
     private final UserDao userDao;
 
     @Autowired
-    public UserService(@Qualifier("userDaoExternal") UserDao userDao) {
+    public UserService(@Qualifier("userDaoInternal") UserDao userDao) {
         this.userDao = userDao;
     }
 
