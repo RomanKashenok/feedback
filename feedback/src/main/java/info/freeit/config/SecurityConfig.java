@@ -1,45 +1,60 @@
 package info.freeit.config;
 
 import info.freeit.config.security.CustomAuthProvider;
+import info.freeit.security.JwtAuthEntryPoint;
+import info.freeit.security.JwtSecurityConfigurer;
+import info.freeit.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final CustomAuthProvider  provider;
+    private final CustomAuthProvider provider;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
     @Autowired
-    public SecurityConfig(CustomAuthProvider provider) {
+    public SecurityConfig(CustomAuthProvider provider, JwtTokenProvider jwtTokenProvider, JwtAuthEntryPoint jwtAuthEntryPoint) {
         this.provider = provider;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtAuthEntryPoint = jwtAuthEntryPoint;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(provider);
-
-//        auth.jdbcAuthentication()
-//                .dataSource(dataSource)
-//                .usersByUsernameQuery("select username, password from users where username = ?")
-//                .authoritiesByUsernameQuery("select username, role from user_roles wher eusername = ?");
-
-//        auth.inMemoryAuthentication().withUser("user").password("{noop}user").roles("USER");
-//        auth.inMemoryAuthentication().withUser("admin").password("{noop}admin").roles("ADMIN");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .cors().disable()
+                .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/signin").permitAll()
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/admin").hasRole("ADMIN")
                 .and()
-                .formLogin()
+                .logout().logoutUrl("*/logout")
                 .and()
-                .logout().logoutUrl("*/logout");
+                .apply(new JwtSecurityConfigurer(jwtTokenProvider));
     }
 }
