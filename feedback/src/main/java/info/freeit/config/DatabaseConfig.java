@@ -35,7 +35,9 @@ public class DatabaseConfig {
 
     @Bean
     public DataSource dataSource() {
-        return new DriverManagerDataSource(url, username, password);
+        DriverManagerDataSource ds = new DriverManagerDataSource(url, username, password);
+        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        return ds;
     }
 
 }

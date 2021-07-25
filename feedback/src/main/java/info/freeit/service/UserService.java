@@ -12,19 +12,18 @@ public final class UserService {
     private final UserDao userDao;
 
     @Autowired
-    public UserService(@Qualifier("userDaoInternal") UserDao userDao) {
+    public UserService(@Qualifier("userDaoHiber") UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public boolean add(User user) {
+    public User add(User user) {
         System.out.printf("UserService: add() with user: %s\n", user);
-        boolean added = false;
         try {
-            added = userDao.add(user);
+            userDao.add(user);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return added;
+        return user;
     }
 
     public boolean delete(long id) {

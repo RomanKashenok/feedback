@@ -26,11 +26,11 @@ public class UserDaoInternal implements UserDao {
         this.clock = clock;
     }
 
-    public boolean add(User user) {
+    public User add(User user) {
         System.out.println("password: " + password);
         System.out.printf("add(): %s at %s\n", daoQualifier, clock.instant().getEpochSecond());
-        boolean add = users.add(user);
-        return add;
+        users.add(user);
+        return user;
     }
 
     public boolean delete (long id) {

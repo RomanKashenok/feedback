@@ -18,13 +18,14 @@ public class UserDaoExternal implements UserDao {
     @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
-    public boolean add(User user) {
+    public User add(User user) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("username", user.getUsername());
         params.addValue("name", user.getName());
         params.addValue("password", user.getPassword());
-        return namedJdbcTemplate.update("INSERT INTO users (username, password, name) VALUES (:username, :password, :name)",
-                params) > 0;
+        namedJdbcTemplate.update("INSERT INTO users (username, password, name) VALUES (:username, :password, :name)",
+                params);
+        return user;
     }
 
     public boolean delete(long id) {

@@ -4,7 +4,7 @@ import info.freeit.model.User;
 
 public interface UserDao {
 
-    boolean add(User user);
+    User add(User user);
 
     boolean delete(long id);
 
