@@ -1,6 +1,8 @@
 package info.freeit.controller;
 
+import info.freeit.model.Abuser;
 import info.freeit.model.User;
+import info.freeit.service.AbuserService;
 import info.freeit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,14 +14,18 @@ public class TestController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AbuserService abuserService;
 
     @GetMapping("/")
     public ModelAndView first() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("first");
         User user = new User("Test", "test", "test");
-        User addedUser = userService.add(user);
-        mav.addObject("msg", addedUser.toString());
+        Abuser user2 = new Abuser("Test2", "test2", "test2");
+        userService.add(user);
+        abuserService.add(user2);
+        mav.addObject("msg", user.toString());
         System.out.println(user);
         return mav;
     }

@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
-public final class UserService {
+public class UserService {
 
     private final UserDao userDao;
 
@@ -16,6 +18,7 @@ public final class UserService {
         this.userDao = userDao;
     }
 
+    @Transactional
     public User add(User user) {
         System.out.printf("UserService: add() with user: %s\n", user);
         try {

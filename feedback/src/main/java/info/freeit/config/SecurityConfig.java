@@ -1,9 +1,6 @@
 package info.freeit.config;
 
 import info.freeit.config.security.CustomAuthProvider;
-import info.freeit.security.JwtAuthEntryPoint;
-import info.freeit.security.JwtSecurityConfigurer;
-import info.freeit.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +16,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomAuthProvider provider;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
     @Autowired
-    public SecurityConfig(CustomAuthProvider provider, JwtTokenProvider jwtTokenProvider, JwtAuthEntryPoint jwtAuthEntryPoint) {
+    public SecurityConfig(CustomAuthProvider provider) {
         this.provider = provider;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.jwtAuthEntryPoint = jwtAuthEntryPoint;
     }
 
     @Bean
@@ -44,8 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors().disable()
                 .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint)
-                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -53,8 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/admin").hasRole("ADMIN")
                 .and()
-                .logout().logoutUrl("*/logout")
-                .and()
-                .apply(new JwtSecurityConfigurer(jwtTokenProvider));
+                .logout().logoutUrl("*/logout");
     }
 }

@@ -32,7 +32,6 @@ public class HibernateConfiguration {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-//        sessionFactory.setAnnotatedClasses(User.class, Role.class);
         sessionFactory.setPackagesToScan("info.freeit.model");
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
@@ -44,7 +43,7 @@ public class HibernateConfiguration {
         properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
         properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.format_sql"));
         properties.put("hibernate.id.new_generator_mappings", "false");
-        properties.put("spring.jpa.hibernate.ddl-auto", "create");
+        properties.put("hibernate.hbm2ddl.auto", "create");
         return properties;
     }
 

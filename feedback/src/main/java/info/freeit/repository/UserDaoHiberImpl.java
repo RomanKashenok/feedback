@@ -5,6 +5,7 @@ import info.freeit.model.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -20,8 +21,8 @@ public class UserDaoHiberImpl implements UserDao {
 
     public User add(User user) {
         Session session = getSession();
-        Role role = session.get(Role.class, 1L);
-        user.setRole(role);
+//        Role role = session.get(Role.class, 1L);
+//        user.setRole(role);
         session.save(user);
         return user;
     }
